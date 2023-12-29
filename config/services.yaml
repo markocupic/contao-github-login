@@ -1,0 +1,40 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+        bind:
+            $authenticationSuccessHandler: '@contao.security.authentication_success_handler'
+
+    _instanceof:
+        Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
+            calls:
+                - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
+
+    Markocupic\ContaoGitHubLogin\:
+        resource: ../src/
+        exclude: ../src/{DependencyInjection,Model,Session,GitHub.php}
+
+
+    # Register session bags
+    markocupic.contao_github_login.session.factory:
+        class: Markocupic\ContaoGitHubLogin\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@markocupic.contao_github_login.session.factory.inner'
+            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag_backend'
+            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag_frontend'
+
+    markocupic.contao_github_login.session.attribute.array_attribute_bag_backend:
+        class: Markocupic\ContaoGitHubLogin\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - '_contao_github_login_attr_backend'
+        calls:
+            - [ 'setName', [ 'contao_github_login_attr_backend' ] ]
+
+    markocupic.contao_github_login.session.attribute.array_attribute_bag_frontend:
+        class: Markocupic\ContaoGitHubLogin\Session\Attribute\ArrayAttributeBag
+        arguments:
+            - '_contao_github_login_attr_frontend'
+        calls:
+            - [ 'setName', [ 'contao_github_login_attr_frontend' ] ]
