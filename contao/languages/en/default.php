@@ -15,7 +15,7 @@ declare(strict_types=1);
 /*
  * Miscellaneous
  */
-$GLOBALS['TL_LANG']['GITHUB_LOGIN_MSC']['loginWithGitHub'] = 'GitHub login';
+$GLOBALS['TL_LANG']['GITHUB_LOGIN_MSC']['logInWithGitHub'] = 'Log in with GitHub';
 $GLOBALS['TL_LANG']['GITHUB_LOGIN_MSC']['or'] = 'or';
 
 /*

@@ -1,7 +1,7 @@
 "use strict";
 
 window.addEventListener('DOMContentLoaded', () => {
-    let login_buttons = document.querySelectorAll('.github-login-button-group button[type="submit"]');
+    let login_buttons = document.querySelectorAll('.github-login-btn-container button[type="submit"]');
     let i;
     for (i = 0; i < login_buttons.length; ++i) {
         let login_button = login_buttons[i];
@@ -31,6 +31,8 @@ window.addEventListener('DOMContentLoaded', () => {
         login_button.classList.add('button--loading');
         login_button.setAttribute('disabled', '');
 
+        let delay = login_button.dataset.delay ?? 1000;
+
         window.setTimeout(() => {
             let formBe = login_button.closest('form.github-login-form-backend');
             let formFe = login_button.closest('form.github-login-form-frontend');
@@ -43,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 formFe.submit();
             }
 
-        }, 1000);
+        }, parseInt(delay));
     }
 
 });

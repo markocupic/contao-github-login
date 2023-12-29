@@ -1,28 +1,37 @@
-<div class="github-login-backend" data-contao-login="{% if disable_contao_login %}disabled{% else %}enabled{% endif %}">
-    <h1>{{ 'MSC.loginBT'|trans({}, 'contao_default') }}</h1>
-    <form action="{{ url }}" id="githubLoginFormBackend" class="github-login-form-backend" method="post">
-        <div class="formbody">
-            <input type="hidden" name="FORM_SUBMIT" value="github-login-backend">
-            {% if enable_csrf_token_check|default %}
-                <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
-            {% endif %}
-            <input type="hidden" name="_target_path" value="{{ target_path }}">
-            <input type="hidden" name="_always_use_target_path" value="{{ always_use_target_path }}">
-            <div class="github-login-button-group">
-                <div class="github-login-button-prepend">
-                    <img src="/bundles/markocupiccontaogithublogin/img/github_octocat.svg" alt="GitHub logo" class="github-login-button-prepend-icon">
-                </div>
-                <button type="submit"><span class="github-login-button-text">{{ 'GITHUB_LOGIN_MSC.loginWithGitHub'|trans({}, 'contao_default') }} <span style="font-size:1rem">&#8594</span></span></button>
-            </div>
-            <div class="github-login-fe-link">
-                <a href="/" class="footer_preview">{{ 'MSC.feLink'|trans({}, 'contao_default') }} ›</a>
-            </div>
-        </div>
-    </form>
+{% use "@MarkocupicContaoGitHubLogin/components/_github_login_button.html.twig" %}
 
-    {% if not disable_contao_login %}
-        <div class="login-button-separator-container">
-            <div class="login-button-separator">{{ 'GITHUB_LOGIN_MSC.or'|trans({}, 'contao_default') }}</div>
-        </div>
-    {% endif %}
-</div>
+{% block github_login_backend %}
+    <div class="github-login-backend" data-contao-login="{% if disable_contao_login %}disabled{% else %}enabled{% endif %}">
+        <h1>{{ 'MSC.loginBT'|trans({}, 'contao_default') }}</h1>
+        {% block github_login_form_backend %}
+            <form action="{{ url }}" id="githubLoginFormBackend" class="github-login-form-backend" method="post">
+                <div class="formbody">
+                    <input type="hidden" name="FORM_SUBMIT" value="github-login-backend">
+                    {% if enable_csrf_token_check|default %}
+                        <input type="hidden" name="REQUEST_TOKEN" value="{{ request_token }}">
+                    {% endif %}
+                    <input type="hidden" name="_target_path" value="{{ target_path }}">
+                    <input type="hidden" name="_always_use_target_path" value="{{ always_use_target_path }}">
+
+                    {% block github_login_button %}
+                        {{ parent() }}
+                    {% endblock %}
+
+                    {% block github_login_frontend_link %}
+                        <div class="github-login-frontend-link">
+                            <a href="/" class="footer_preview">{{ 'MSC.feLink'|trans({}, 'contao_default') }} ›</a>
+                        </div>
+                    {% endblock %}
+                </div>
+            </form>
+        {% endblock %}
+
+        {% if not disable_contao_login %}
+            {% block github_login_btn_separator_container %}
+                <div class="github-login-btn-separator-container">
+                    <div class="github-login-btn-separator">{{ 'GITHUB_LOGIN_MSC.or'|trans({}, 'contao_default') }}</div>
+                </div>
+            {% endblock %}
+        {% endif %}
+    </div>
+{% endblock %}

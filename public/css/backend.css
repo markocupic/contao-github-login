@@ -25,7 +25,7 @@
     width: 100%;
     border: 0;
 }
-.github-login-backend .formbody .github-login-fe-link {
+.github-login-backend .formbody .github-login-frontend-link {
     margin-top: 1rem;
     display: flex;
     justify-content: end;
@@ -47,24 +47,24 @@
     margin-top: 10px;
     margin: 10px 0 15px 0;
 }
-.github-login-backend .login-button-separator-container {
+.github-login-backend .github-login-btn-separator-container {
     margin-top: 20px;
     margin-bottom: 20px;
 }
-.github-login-backend .login-button-separator-container .login-button-separator {
+.github-login-backend .github-login-btn-separator-container .github-login-btn-separator {
     display: flex;
     align-items: center;
     text-align: center;
     color: #c6c6c6;
 }
-.github-login-backend .login-button-separator-container .login-button-separator::before, .github-login-backend .login-button-separator-container .login-button-separator::after {
+.github-login-backend .github-login-btn-separator-container .github-login-btn-separator::before, .github-login-backend .github-login-btn-separator-container .github-login-btn-separator::after {
     content: "";
     flex: 1;
     border-bottom: 1px solid #d4d4d4;
 }
-.github-login-backend .login-button-separator-container .login-button-separator::before {
+.github-login-backend .github-login-btn-separator-container .github-login-btn-separator::before {
     margin-right: 0.75em;
 }
-.github-login-backend .login-button-separator-container .login-button-separator::after {
+.github-login-backend .github-login-btn-separator-container .github-login-btn-separator::after {
     margin-left: 0.75em;
 }

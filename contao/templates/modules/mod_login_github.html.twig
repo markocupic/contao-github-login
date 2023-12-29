@@ -1,3 +1,5 @@
+{% use "@MarkocupicContaoGitHubLogin/components/_github_login_button.html.twig" %}
+
 {% do addJavascriptResource('bundles/markocupiccontaogithublogin/js/github_login_button_animation.js') %}
 {% do addCssResource('bundles/markocupiccontaogithublogin/css/github_login_button.css') %}
 
@@ -7,33 +9,32 @@
     <{{ hl }}>{{ headline }}</{{ hl }}>
 {% endif %}
 
-<div class="github-login-frontend">
-    <h1>{{ 'MSC.loginBT'|trans({}, 'contao_default') }}</h1>
-    <form action="{{ logout|default ? action : '{{github_login_url::frontend}}' }}" id="githubLoginFormBackend" class="github-login-form-frontend" method="post">
-        <div class="formbody">
-            {% if message|default %}
-                <p class="error">{{ message }}</p>
-            {% endif %}
-            <input type="hidden" name="FORM_SUBMIT" value="{{ logout|default ? formId : 'github-login-frontend' }}">
-            <input type="hidden" name="REQUEST_TOKEN" value="{{ Template.requestToken|default('') }}">
-            <input type="hidden" name="_target_path" value="{{ targetPath|default('') }}">
-            <input type="hidden" name="_failure_path" value="{{ '{{github_login_failure_path}}' }}">
-            <input type="hidden" name="_always_use_target_path" value="{{ forceTargetPath|default('') }}">
-            {% if logout|default %}
-                <p class="login_info">{{ loggedInAs }}<br>{{ lastLogin }}</p>
-                <div class="widget widget-submit">
-                    <button type="submit" class="submit">{{ slabel }}</button>
-                </div>
-            {% elseif twoFactorEnabled|default %}
-                <p class="error">Two-factor authentication not supported.</p>
-            {% else %}
-                <div class="github-login-button-group">
-                    <div class="github-login-button-prepend">
-                        <img src="/bundles/markocupiccontaogithublogin/img/github_octocat.svg" alt="GitHub logo" class="github-login-button-prepend-icon">
+{% block github_login_backend %}
+    <div class="github-login-frontend">
+        <h1>{{ 'MSC.loginBT'|trans({}, 'contao_default') }}</h1>
+        <form action="{{ logout|default ? action : '{{github_login_url::frontend}}' }}" id="githubLoginFormBackend" class="github-login-form-frontend" method="post">
+            <div class="formbody">
+                {% if message|default %}
+                    <p class="error">{{ message }}</p>
+                {% endif %}
+                <input type="hidden" name="FORM_SUBMIT" value="{{ logout|default ? formId : 'github-login-frontend' }}">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{ Template.requestToken|default('') }}">
+                <input type="hidden" name="_target_path" value="{{ targetPath|default('') }}">
+                <input type="hidden" name="_failure_path" value="{{ '{{github_login_failure_path}}' }}">
+                <input type="hidden" name="_always_use_target_path" value="{{ forceTargetPath|default('') }}">
+                {% if logout|default %}
+                    <p class="login_info">{{ loggedInAs }}<br>{{ lastLogin }}</p>
+                    <div class="widget widget-submit">
+                        <button type="submit" class="submit">{{ slabel }}</button>
                     </div>
-                    <button type="submit"><span class="github-login-button-text">{{ 'GITHUB_LOGIN_MSC.loginWithGitHub'|trans({}, 'contao_default') }} <span style="font-size:1rem">&#8594</span></span></button>
-                </div>
-            {% endif %}
-        </div>
-    </form>
-</div>
+                {% elseif twoFactorEnabled|default %}
+                    <p class="error">Two-factor authentication not supported.</p>
+                {% else %}
+                    {% block github_login_button %}
+                        {{ parent() }}
+                    {% endblock %}
+                {% endif %}
+            </div>
+        </form>
+    </div>
+{% endblock %}

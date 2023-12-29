@@ -3,30 +3,29 @@
     --github-login-button-bg-color-hover: #000000;
 }
 
-.github-login-button-group {
-    width: 100% !important;
+.github-login-btn-container {
+    width: 100%;
     position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
-    border: 1px solid var(--github-login-button-bg-color);
-    border-radius: 5px;
-    background: var(--github-login-button-bg-color);
 }
-.github-login-button-group button:not(:disabled):not(.disabled):active {
+
+.github-login-btn-container button:not(:disabled):not(.disabled):active {
     color: #fff;
-    background-color: var(--github-login-button-bg-color-hover);
-    background-image: none;
-    border-color: var(--github-login-button-bg-color-hover);
+    border: 0;
 }
-.github-login-button-group button:hover {
+
+.github-login-btn-container button:hover {
     background-color: var(--github-login-button-bg-color-hover) !important;
     color: #fff !important;
 }
-.github-login-button-group button:focus {
+
+.github-login-btn-container button:focus {
     outline: none !important;
 }
-.github-login-button-group button {
+
+.github-login-btn-container button {
     display: flex;
     align-content: center;
     justify-content: center;
@@ -34,60 +33,49 @@
     cursor: pointer;
     flex-grow: 1;
     font-weight: 400;
-    color: #fff;
     user-select: none;
     background-color: var(--github-login-button-bg-color);
-    margin: 0.375rem;
+    margin: 4px 0;
     font-family: inherit;
-    font-size: 0.875rem;
-    line-height: 1.5;
-    border: none;
-    border-radius: 0;
     overflow: visible;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    color: #ffffff;
+    font-size: 13px;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 11px;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    min-height: 36px;
+    line-height: 1;
 }
-.github-login-button-group button[disabled] {
+
+.github-login-btn-container button[disabled] {
     background-color: var(--github-login-button-bg-color-hover);
     border-color: var(--github-login-button-bg-color-hover);
     opacity: 1;
 }
-.github-login-button-group.github-login-button-group-lg button {
-    font-size: 1rem;
-}
-.github-login-button-group > .github-login-button-prepend {
-    background-color: var(--github-login-button-bg-color);
-    display: flex;
-    align-items: center;
-    margin: 0.375rem 0.5rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    text-align: center;
-    white-space: nowrap;
-}
-.github-login-button-group.github-login-button-group-lg > .github-login-button-prepend {
-    padding-left: 13px;
-    padding-right: 13px;
-}
-.github-login-button-group > .github-login-button-prepend > .github-login-button-prepend-icon {
-    height: 40px;
-    width: auto;
-}
-.github-login-button-group.github-login-button-group-lg > .github-login-button-prepend > .github-login-button-prepend-icon {
-    height: 50px;
-}
-.github-login-button-group button.button--loading .github-login-button-text {
+
+.github-login-btn-container button.button--loading svg, .github-login-btn-container button.button--loading .github-login-btn--btn-text {
     display: none;
 }
-.github-login-button-group .button--loading::after {
+
+.github-login-btn-container .button--loading::after {
     content: "";
-    width: 20px;
-    height: 20px;
-    border: 4px solid transparent;
+    width: 18px;
+    height: 18px;
+    border: 3px solid transparent;
     border-top-color: #ffffff;
     border-radius: 50%;
     animation: button-loading-spinner 1s ease infinite;
+    box-sizing: border-box;
 }
+
+.github-login-btn-container button svg {
+    margin-right: 12px;
+}
+
 @keyframes button-loading-spinner {
     from {
         transform: rotate(0turn);
