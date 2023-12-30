@@ -1,7 +1,7 @@
 {% use "@MarkocupicContaoGitHubLogin/components/_github_login_button.html.twig" %}
 
-{% do addJavascriptResource('bundles/markocupiccontaogithublogin/js/github_login_button_animation.js') %}
-{% do addCssResource('bundles/markocupiccontaogithublogin/css/github_login_button.css') %}
+{% do addJavascriptResource('bundles/markocupiccontaogithublogin/js/github_login_button_animation.js|static') %}
+{% do addCssResource('bundles/markocupiccontaogithublogin/css/github_login_button.css|static') %}
 
 <!-- indexer::stop -->
 <div class="{{ class }} {{ logout|default ? 'logout' : 'login' }} block" {{ cssID }}>

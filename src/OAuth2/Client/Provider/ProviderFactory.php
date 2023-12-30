@@ -14,8 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin\OAuth2\Client\Provider;
 
-use Contao\CoreBundle\Routing\ScopeMatcher;
-use Symfony\Component\HttpFoundation\Request;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -23,26 +22,18 @@ class ProviderFactory
 {
     public function __construct(
         private readonly RouterInterface $router,
-        private readonly ScopeMatcher $scopeMatcher,
+        private readonly ClientRegistry $clientRegistry,
     ) {
     }
 
-    public function create(Request $request): GitHub
+    public function create(string $clientName): GitHub
     {
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            $clientId = $_ENV['GITHUB_BACKEND_LOGIN_CLIENT_ID'];
-            $clientSecret = $_ENV['GITHUB_BACKEND_LOGIN_CLIENT_SECRET'];
-            $redirectUri = $this->router->generate('markocupic_contao_github_backend_login', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        } else {
-            $clientId = $_ENV['GITHUB_FRONTEND_LOGIN_CLIENT_ID'];
-            $clientSecret = $_ENV['GITHUB_FRONTEND_LOGIN_CLIENT_SECRET'];
-            $redirectUri = $this->router->generate('markocupic_contao_github_frontend_login', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
+        $config = $this->clientRegistry->getClientConfigFor($clientName);
 
         return new GitHub([
-            'clientId' => $clientId,
-            'clientSecret' => $clientSecret,
-            'redirectUri' => $redirectUri,
+            'clientId' => $config['client_id'],
+            'clientSecret' => $config['client_secret'],
+            'redirectUri' => $this->router->generate($config['redirect_route'], [], UrlGeneratorInterface::ABSOLUTE_URL),
         ]);
     }
 }

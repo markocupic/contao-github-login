@@ -17,13 +17,20 @@ To display the login button in the frontend, create a member login module and se
 ```yaml
 # config/config.yaml
 markocupic_contao_github_login:
-    backend:
-        disable_contao_login: false
-        enable_github_login: true
-        enable_csrf_token_check: true
-    frontend:
-        enable_github_login: false
-        enable_csrf_token_check: true
+    clients:
+        backend:
+            disable_contao_login: true
+            enable_github_login: true
+            enable_csrf_token_check: true
+            redirect_route: 'markocupic_contao_github_backend_login'
+            client_id: '%env(GITHUB_BACKEND_LOGIN_CLIENT_ID)%'
+            client_secret: '%env(GITHUB_BACKEND_LOGIN_CLIENT_SECRET)%'
+        frontend:
+            enable_github_login: true
+            enable_csrf_token_check: true
+            redirect_route: 'markocupic_contao_github_frontend_login'
+            client_id: '%env(GITHUB_FRONTEND_LOGIN_CLIENT_ID)%'
+            client_secret: '%env(GITHUB_FRONTEND_LOGIN_CLIENT_SECRET)%'
 ```
 
 ```

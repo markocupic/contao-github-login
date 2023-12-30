@@ -43,16 +43,21 @@ class MarkocupicContaoGitHubLoginExtension extends Extension
             new FileLocator(__DIR__.'/../../config')
         );
 
-        $loader->load('parameters.yaml');
         $loader->load('services.yaml');
-        $loader->load('listener.yaml');
 
         $rootKey = $this->getAlias();
-        $container->setParameter($rootKey.'.backend.disable_contao_login', $config['backend']['disable_contao_login']);
-        $container->setParameter($rootKey.'.backend.enable_github_login', $config['backend']['enable_github_login']);
-        $container->setParameter($rootKey.'.backend.enable_csrf_token_check', $config['backend']['enable_csrf_token_check']);
-        $container->setParameter($rootKey.'.frontend.enable_github_login', $config['frontend']['enable_github_login']);
-        $container->setParameter($rootKey.'.frontend.enable_csrf_token_check', $config['frontend']['enable_csrf_token_check']);
-        $container->setParameter($rootKey.'.flash_bag_key', $config['flash_bag_key']);
+        // Backend client
+        $container->setParameter($rootKey.'.clients.backend.disable_contao_login', $config['clients']['backend']['disable_contao_login']);
+        $container->setParameter($rootKey.'.clients.backend.enable_github_login', $config['clients']['backend']['enable_github_login']);
+        $container->setParameter($rootKey.'.clients.backend.enable_csrf_token_check', $config['clients']['backend']['enable_csrf_token_check']);
+        $container->setParameter($rootKey.'.clients.backend.redirect_route', $config['clients']['backend']['redirect_route']);
+        $container->setParameter($rootKey.'.clients.backend.client_id', $config['clients']['backend']['client_id']);
+        $container->setParameter($rootKey.'.clients.backend.client_secret', $config['clients']['backend']['client_secret']);
+        // Frontend client
+        $container->setParameter($rootKey.'.clients.frontend.enable_github_login', $config['clients']['frontend']['enable_github_login']);
+        $container->setParameter($rootKey.'.clients.frontend.enable_csrf_token_check', $config['clients']['frontend']['enable_csrf_token_check']);
+        $container->setParameter($rootKey.'.clients.frontend.redirect_route', $config['clients']['frontend']['redirect_route']);
+        $container->setParameter($rootKey.'.clients.frontend.client_id', $config['clients']['frontend']['client_id']);
+        $container->setParameter($rootKey.'.clients.frontend.client_secret', $config['clients']['frontend']['client_secret']);
     }
 }

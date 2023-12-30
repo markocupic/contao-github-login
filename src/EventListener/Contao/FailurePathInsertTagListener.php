@@ -27,11 +27,11 @@ class FailurePathInsertTagListener
     ) {
     }
 
-    public function __invoke(string $tag)
+    public function __invoke(string $tag): false|string
     {
         $chunks = explode('::', $tag);
 
-        if (self::TAG !== $chunks[0]) {
+        if (empty($chunks) || self::TAG !== $chunks[0]) {
             return false;
         }
 

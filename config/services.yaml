@@ -5,6 +5,7 @@ services:
         public: false
         bind:
             $authenticationSuccessHandler: '@contao.security.authentication_success_handler'
+            $clientRegistry: '@markocupic.contao_github_login.oauth2.client.client_registry'
 
     _instanceof:
         Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
@@ -13,8 +14,16 @@ services:
 
     Markocupic\ContaoGitHubLogin\:
         resource: ../src/
-        exclude: ../src/{DependencyInjection,Model,Session,GitHub.php}
+        exclude:
+            - ../src/{DependencyInjection,Model,Session}
+            - ../src/**/*Exception.php
+            - ../src/OAuth2\Client\Provider\GitHub.php
+            - ../src/OAuth2\Client\Provider\GitHubResourceOwner.php
 
+    markocupic.contao_github_login.oauth2.client.client_registry:
+        class: Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry
+        arguments:
+            - ~ # Add clients dynamically with a compiler pass
 
     # Register session bags
     markocupic.contao_github_login.session.factory:

@@ -18,13 +18,11 @@ use Contao\CoreBundle\Routing\ScopeMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class KernelRequestSubscriber implements EventSubscriberInterface
+readonly class KernelRequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly ScopeMatcher $scopeMatcher,
-        private readonly UrlGeneratorInterface $router,
+        private ScopeMatcher $scopeMatcher,
     ) {
     }
 
@@ -38,10 +36,10 @@ class KernelRequestSubscriber implements EventSubscriberInterface
         $request = $e->getRequest();
 
         if ($this->scopeMatcher->isBackendRequest($request)) {
-            if ($request->attributes->get('_route') === 'contao_backend_login') {
-                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/github_login_button.css';
-                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/backend.css';
-                $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupiccontaogithublogin/js/github_login_button_animation.js';
+            if ('contao_backend_login' === $request->attributes->get('_route')) {
+                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/github_login_button.css|static';
+                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/backend.css|static';
+                $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupiccontaogithublogin/js/github_login_button_animation.js|static';
             }
         }
     }

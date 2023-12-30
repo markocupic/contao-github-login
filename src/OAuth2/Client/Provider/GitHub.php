@@ -64,11 +64,6 @@ class GitHub extends AbstractProvider
         return $this->domain.'/api/v3/user';
     }
 
-    public function getState()
-    {
-        return parent::getState();
-    }
-
     /**
      * @throws IdentityProviderException
      */

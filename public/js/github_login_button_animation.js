@@ -2,19 +2,16 @@
 
 window.addEventListener('DOMContentLoaded', () => {
     let login_buttons = document.querySelectorAll('.github-login-btn-container button[type="submit"]');
-    let i;
-    for (i = 0; i < login_buttons.length; ++i) {
-        let login_button = login_buttons[i];
-        if (login_button) {
-            login_button.addEventListener('click', (event) => {
-                event.preventDefault();
-                event.stopPropagation();
 
-                submitForm(login_button);
+    for (let login_button of login_buttons) {
+        login_button.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
 
-                return false;
-            });
-        }
+            submitForm(login_button);
+
+            return false;
+        });
     }
 
     /**

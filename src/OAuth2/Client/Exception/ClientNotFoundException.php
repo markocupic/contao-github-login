@@ -11,3 +11,9 @@ declare(strict_types=1);
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/contao-github-login
  */
+
+namespace Markocupic\ContaoGitHubLogin\OAuth2\Client\Provider\Exception;
+
+class ClientNotFoundException extends \RuntimeException
+{
+}

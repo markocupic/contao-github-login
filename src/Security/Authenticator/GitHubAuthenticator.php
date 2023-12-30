@@ -29,7 +29,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
@@ -52,7 +51,6 @@ class GitHubAuthenticator extends AbstractAuthenticator
         private readonly ContaoFramework $framework,
         private readonly ProviderFactory $providerFactory,
         private readonly ScopeMatcher $scopeMatcher,
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface|null $logger = null,
     ) {
@@ -74,7 +72,10 @@ class GitHubAuthenticator extends AbstractAuthenticator
 
     public function start(Request $request, AuthenticationException|null $authException = null): RedirectResponse|Response
     {
-        $provider = $this->providerFactory->create($request);
+        // Get the client from Contao scope
+        $clientName = $request->attributes->get('_scope');
+
+        $provider = $this->providerFactory->create($clientName);
 
         // Fetch the authorization URL from the provider;
         // this returns the urlAuthorize option and generates and applies any necessary parameters
@@ -91,6 +92,9 @@ class GitHubAuthenticator extends AbstractAuthenticator
     {
         $this->framework->initialize();
 
+        // Get the client from Contao scope
+        $clientName = $request->attributes->get('_scope');
+
         // Get the message adapter
         $message = $this->framework->getAdapter(Message::class);
 
@@ -104,12 +108,14 @@ class GitHubAuthenticator extends AbstractAuthenticator
         }
 
         try {
-            $provider = $this->providerFactory->create($request);
+            $provider = $this->providerFactory->create($clientName);
 
             // Try to get an access token using the authorization code grant.
             $accessToken = $provider->getAccessToken('authorization_code', [
                 'code' => $request->query->get('code'),
             ]);
+
+            // Todo: Dispatch GetAccessTokenEvent (Import not existent users)
 
             // Get the email address from resource owner.
             $email = $provider->getResourceOwner($accessToken)->toArray()['email'];
@@ -135,6 +141,7 @@ class GitHubAuthenticator extends AbstractAuthenticator
             $userAdapter = $this->framework->getAdapter(MemberModel::class);
         }
 
+
         $t = $userAdapter->getTable();
         $where = ["$t.email = '$email'"];
 
@@ -146,7 +153,7 @@ class GitHubAuthenticator extends AbstractAuthenticator
             if ($this->scopeMatcher->isBackendRequest($request)) {
                 // This will trigger self::onAuthenticationFailure()
                 $this->throwAuthenticationException(GitHubAuthenticationException::ERROR_CONTAO_BACKEND_USER_NOT_FOUND);
-            }else{
+            } else {
                 // This will trigger self::onAuthenticationFailure()
                 $this->throwAuthenticationException(GitHubAuthenticationException::ERROR_CONTAO_FRONTEND_USER_NOT_FOUND);
             }
@@ -169,7 +176,7 @@ class GitHubAuthenticator extends AbstractAuthenticator
         $this->getSessionBag($request)->clear();
 
         // Trigger the on authentication success handler from the Contao Core.
-        return $this->authenticationSuccessHandler->onAuthenticationSuccess($request, $token, $firewallName);
+        return $this->authenticationSuccessHandler->onAuthenticationSuccess($request, $token);
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response|null

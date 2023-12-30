@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\ContaoGitHubLogin\EventListener\Contao;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -25,6 +26,7 @@ class LoginRouteInsertTagListener
     public const TAG = 'github_login_url';
 
     public function __construct(
+        private readonly ClientRegistry $clientRegistry,
         private readonly RouterInterface $router,
         private readonly UriSigner $uriSigner,
     ) {
@@ -38,14 +40,15 @@ class LoginRouteInsertTagListener
             return false;
         }
 
-        if (!isset($chunks[1]) || ('frontend' !== $chunks[1] && 'backend' !== $chunks[1])) {
-            $chunks[1] = 'frontend';
+        $clients = $this->clientRegistry->getAvailableClients();
+
+        if (empty($chunks[1]) || !\in_array($chunks[1], $clients, true)) {
+            return false;
         }
 
-        if ($chunks[1] === 'backend') {
-            return $this->uriSigner->sign($this->router->generate('markocupic_contao_github_backend_login', [], UrlGeneratorInterface::ABSOLUTE_URL));
-        }
+        $clientName = $chunks[1];
+        $clientConfig = $this->clientRegistry->getClientConfigFor($clientName);
 
-        return $this->uriSigner->sign($this->router->generate('markocupic_contao_github_frontend_login', [], UrlGeneratorInterface::ABSOLUTE_URL));
+        return $this->uriSigner->sign($this->router->generate($clientConfig['redirect_route'], [], UrlGeneratorInterface::ABSOLUTE_URL));
     }
 }
