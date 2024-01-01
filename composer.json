@@ -24,7 +24,6 @@
     "require": {
         "php": "^8.2",
         "contao/core-bundle": "^5.2",
-        "knpuniversity/oauth2-client-bundle": "^2.0",
         "league/oauth2-client": "^2.7",
         "league/oauth2-github": "^3.0",
         "markocupic/contao-twig-assets": "^1.1",
