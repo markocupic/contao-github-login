@@ -22,36 +22,33 @@ markocupic_contao_github_login:
             disable_contao_login: true
             enable_github_login: true
             enable_csrf_token_check: true
-            redirect_route: 'markocupic_contao_github_backend_login'
-            client_id: '%env(GITHUB_BACKEND_LOGIN_CLIENT_ID)%'
-            client_secret: '%env(GITHUB_BACKEND_LOGIN_CLIENT_SECRET)%'
+            client_id: '%env(CONTAO_GITHUB_LOGIN_CLIENT_ID)%'
+            client_secret: '%env(GITHUB_LOGIN_CLIENT_SECRET)%'
         frontend:
             enable_github_login: true
             enable_csrf_token_check: true
-            redirect_route: 'markocupic_contao_github_frontend_login'
-            client_id: '%env(GITHUB_FRONTEND_LOGIN_CLIENT_ID)%'
-            client_secret: '%env(GITHUB_FRONTEND_LOGIN_CLIENT_SECRET)%'
+            client_id: '%env(CONTAO_GITHUB_LOGIN_CLIENT_ID)%'
+            client_secret: '%env(CONTAO_GITHUB_LOGIN_CLIENT_SECRET)%'
 ```
 
 ```
 # .env
-GITHUB_BACKEND_LOGIN_CLIENT_ID=6337hdhks7d62277sd
-GITHUB_BACKEND_LOGIN_CLIENT_SECRET=738gdsksd893723723932023023932
-GITHUB_FRONTEND_LOGIN_CLIENT_ID=633zuiewr88d677sd
-GITHUB_FRONTEND_LOGIN_CLIENT_SECRET=738g83489324972393rrwerwerwer
+CONTAO_GITHUB_LOGIN_CLIENT_ID=6337hdhks7d62277sd
+CONTAO_GITHUB_LOGIN_CLIENT_SECRET=738gdsksd893723723932023023932
 ```
 
 ## Register GitHub App
-1. Log in to your GitHub Account and go to [GitHub Developer Settings](https://github.com/settings/apps) to obtain your GitHub **client_id** and **client_secret**.
+1. Log in to your GitHub Account and go to [GitHub Developer Settings](https://github.com/settings/apps) to enter the **callback URLS** and get your GitHub **client_id** and **client_secret**.
 2. Register a new GitHub App. <span style="background-color:yellow">A new GitHub App must be set up for each login (frontend & backend).</span>
 3. Add a name for your GitHub app.
 4. Add the homepage URL: `https://your-contao-site.com`
-5. Add the ***callback URL***: `https://your-contao-site.com/_github_backend_login` (Contao Backend Login) or `https://your-contao-site.com/_github_frontend_login` (Contao Frontend Login)
-6. Save your settings.
-7. Then you generate a new **client secret**
-8. Both, the **client_id** and the **client_secret** you have to write to your .env file.
-9. Click **Permissions & events** in the navigation on the left.
-10. Open **Account permissions** and select **Read-only** access under **Email addresses**
+5. Add the first **callback URL**: `https://your-contao-page.com/_oauth2_login/github/backend` for the Backend Login.
+6. Add the second **callback URL**: `https://your-contao-page.com/_oauth2_login/github/frontend` for the Frontend Login.
+7. Save your settings.
+8. Generate the **client secret**
+9. In a next step write the **client_id** and the **client_secret** to your .env file.
+10. Click **Permissions & events** in the navigation on the left.
+11. Open **Account permissions** and select **Read-only** access under **Email addresses**
 
 
 | **Contao Backend**                                                                           | **GitHub App Settings**                                                            | **GitHub App Permissions**                                                               |

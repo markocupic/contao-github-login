@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao GitHub Authenticator.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -17,7 +17,6 @@ namespace Markocupic\ContaoGitHubLogin\Controller;
 use Contao\CoreBundle\Csrf\ContaoCsrfTokenManager;
 use Contao\CoreBundle\Exception\InvalidRequestTokenException;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\System;
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry;
 use Markocupic\ContaoGitHubLogin\Security\Authenticator\GitHubAuthenticator;
@@ -32,17 +31,19 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
 
-#[Route('/_github_backend_login', name: 'markocupic_contao_github_backend_login', defaults: ['_scope' => 'backend', '_token_check' => false])]
-#[Route('/_github_frontend_login', name: 'markocupic_contao_github_frontend_login', defaults: ['_scope' => 'frontend', '_token_check' => false])]
-class GitHubLoginController extends AbstractController
+#[Route('/_start_github_backend_login', name: self::LOGIN_ROUTE_BACKEND, defaults: ['_scope' => 'backend', '_token_check' => false])]
+#[Route('/_start_github_frontend_login', name: self::LOGIN_ROUTE_FRONTEND, defaults: ['_scope' => 'frontend', '_token_check' => false])]
+class GitHubLoginStartController extends AbstractController
 {
+    public const LOGIN_ROUTE_BACKEND = 'markocupic_contao_github_backend_login';
+    public const LOGIN_ROUTE_FRONTEND = 'markocupic_contao_github_frontend_login';
+
     public function __construct(
         private readonly ContaoFramework $framework,
         private readonly ContaoCsrfTokenManager $tokenManager,
         private readonly GitHubAuthenticator $authenticator,
         private readonly ClientRegistry $clientRegistry,
         private readonly RouterInterface $router,
-        private readonly ScopeMatcher $scopeMatcher,
         private readonly UriSigner $uriSigner,
     ) {
     }
@@ -56,10 +57,11 @@ class GitHubLoginController extends AbstractController
             return new JsonResponse(['message' => 'Access denied.'], Response::HTTP_BAD_REQUEST);
         }
 
-        $clientName = $_scope;
-        $clientConfig = $this->clientRegistry->getClientConfigFor($clientName);
+        $oauthClientName = $_scope;
 
-        $this->checkGitHubLoginIsActivated($clientName, $clientConfig);
+        $clientConfig = $this->clientRegistry->getClientConfigFor($oauthClientName);
+
+        $this->checkGitHubLoginIsActivated($oauthClientName, $clientConfig);
 
         // Check csrf token
         if ($clientConfig['enable_csrf_token_check']) {
@@ -68,12 +70,9 @@ class GitHubLoginController extends AbstractController
             $this->validateCsrfToken($request->get('REQUEST_TOKEN'), $this->tokenManager, $csrfTokenName);
         }
 
-        if ('backend' === $_scope) {
-
+        if ('backend' === $oauthClientName) {
             $targetPath = $request->get('_target_path', base64_encode($this->router->generate('contao_backend', [], UrlGeneratorInterface::ABSOLUTE_URL)));
         } else {
-            // Check csrf token
-
             // Frontend: If there is an authentication error, Contao will redirect the user back to the login form
             $failurePath = $request->get('_failure_path', null);
             $targetPath = $request->get('_target_path', base64_encode($request->getSchemeAndHttpHost()));
@@ -88,16 +87,12 @@ class GitHubLoginController extends AbstractController
             $sessionBag->set('_failure_path', $failurePath);
         }
 
-        return $this->authenticator->start($request);
+        return $this->authenticator->start($request, $oauthClientName);
     }
 
     private function getSessionBag(Request $request): SessionBagInterface
     {
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            return $request->getSession()->getBag('contao_github_login_attr_backend');
-        }
-
-        return $request->getSession()->getBag('contao_github_login_attr_frontend');
+        return $request->getSession()->getBag('contao_github_login_attr');
     }
 
     private function validateCsrfToken(string $strToken, ContaoCsrfTokenManager $tokenManager, string $csrfTokenName): void
@@ -112,9 +107,9 @@ class GitHubLoginController extends AbstractController
     /**
      * @throws \Exception
      */
-    private function checkGitHubLoginIsActivated(string $clientName, array $clientConfig): void
+    private function checkGitHubLoginIsActivated(string $_scope, array $clientConfig): void
     {
-        if ('backend' === $clientName) {
+        if ('backend' === $_scope) {
             if (!$clientConfig['enable_github_login']) {
                 throw new \Exception('GitHub Backend Login not activated. Please check your container configuration.');
             }

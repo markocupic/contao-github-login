@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao GitHub Authenticator.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -18,7 +18,6 @@ use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\System;
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\UriSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -59,7 +58,7 @@ readonly class ParseBackendTemplateListener
             $template = [];
 
             // Generate & sign url to the markocupic_contao_github_backend_login route
-            $template['url'] = $this->uriSigner->sign($this->router->generate($clientConfig['redirect_route'], [], UrlGeneratorInterface::ABSOLUTE_URL));
+            $template['url'] = $this->uriSigner->sign($this->router->generate('markocupic_contao_github_backend_login', [], UrlGeneratorInterface::ABSOLUTE_URL));
 
             // Get request token (disabled by default)
             $template['request_token'] = '';

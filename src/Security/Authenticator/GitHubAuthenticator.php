@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao GitHub Authenticator.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -20,11 +20,14 @@ use Contao\CoreBundle\Security\Authentication\AuthenticationSuccessHandler;
 use Contao\MemberModel;
 use Contao\Message;
 use Contao\UserModel;
+use League\OAuth2\Client\Provider\Exception\GithubIdentityProviderException;
+use Markocupic\ContaoGitHubLogin\Event\GetAccessTokenEvent;
 use Markocupic\ContaoGitHubLogin\Exception\GitHubAuthenticationException;
-use Markocupic\ContaoGitHubLogin\OAuth2\Client\Provider\Exception\GitHubIdentityProviderException;
-use Markocupic\ContaoGitHubLogin\OAuth2\Client\Provider\ProviderFactory;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientFactory;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry;
 use Markocupic\ContaoGitHubLogin\Util\AuthenticatorUtil;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,16 +43,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class GitHubAuthenticator extends AbstractAuthenticator
 {
-    public const ALLOWED_LOGIN_ROUTES = [
-        'markocupic_contao_github_backend_login',
-        'markocupic_contao_github_frontend_login',
-    ];
-
     public function __construct(
         private readonly AuthenticationSuccessHandler $authenticationSuccessHandler,
         private readonly AuthenticatorUtil $authenticatorUtil,
+        private readonly ClientFactory $clientFactory,
+        private readonly ClientRegistry $clientRegistry,
         private readonly ContaoFramework $framework,
-        private readonly ProviderFactory $providerFactory,
+        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface|null $logger = null,
@@ -58,32 +58,45 @@ class GitHubAuthenticator extends AbstractAuthenticator
 
     public function supports(Request $request): bool
     {
-        // Do only log in users from allowed routes
-        if (!\in_array($request->attributes->get('_route'), self::ALLOWED_LOGIN_ROUTES, true)) {
+        if (empty($request->query->get('code'))) {
             return false;
         }
 
-        if (empty($request->query->get('code'))) {
+        if (!$request->attributes->has('_scope')) {
+            return false;
+        }
+
+        if ('github' !== $request->attributes->get('_oauth2_provider_type')) {
+            return false;
+        }
+
+        $oauthClientName = $request->attributes->get('_scope');
+
+        if (!\in_array($oauthClientName, $this->clientRegistry->getAvailableClients(), true)) {
+            return false;
+        }
+
+        $clientConfig = $this->clientRegistry->getClientConfigFor($oauthClientName);
+
+        // Do only log in users from allowed routes
+        if ($request->attributes->get('_route') !== $clientConfig['redirect_route']) {
             return false;
         }
 
         return true;
     }
 
-    public function start(Request $request, AuthenticationException|null $authException = null): RedirectResponse|Response
+    public function start(Request $request, string $oauthClientName, AuthenticationException|null $authException = null): RedirectResponse|Response
     {
-        // Get the client from Contao scope
-        $clientName = $request->attributes->get('_scope');
-
-        $provider = $this->providerFactory->create($clientName);
+        $client = $this->clientFactory->create($oauthClientName);
 
         // Fetch the authorization URL from the provider;
         // this returns the urlAuthorize option and generates and applies any necessary parameters
         // (e.g. state).
-        $authorizationUrl = $provider->getAuthorizationUrl();
+        $authorizationUrl = $client->getAuthorizationUrl();
 
         $sessionBag = $this->getSessionBag($request);
-        $sessionBag->set('oauth2state', $provider->getState());
+        $sessionBag->set('oauth2state', $client->getState());
 
         return new RedirectResponse($authorizationUrl);
     }
@@ -91,9 +104,6 @@ class GitHubAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): Passport
     {
         $this->framework->initialize();
-
-        // Get the client from Contao scope
-        $clientName = $request->attributes->get('_scope');
 
         // Get the message adapter
         $message = $this->framework->getAdapter(Message::class);
@@ -108,18 +118,22 @@ class GitHubAuthenticator extends AbstractAuthenticator
         }
 
         try {
-            $provider = $this->providerFactory->create($clientName);
+            // Get the client name (backend or frontend) from the contao scope
+            $oauthClientName = $request->attributes->get('_scope');
+            $client = $this->clientFactory->create($oauthClientName);
 
             // Try to get an access token using the authorization code grant.
-            $accessToken = $provider->getAccessToken('authorization_code', [
+            $accessToken = $client->getAccessToken('authorization_code', [
                 'code' => $request->query->get('code'),
             ]);
 
-            // Todo: Dispatch GetAccessTokenEvent (Import not existent users)
+            // Dispatch GetAccessTokenEvent event
+            $event = new GetAccessTokenEvent($accessToken, $request, $request->attributes->get('_scope'));
+            $this->eventDispatcher->dispatch($event, GetAccessTokenEvent::NAME);
 
             // Get the email address from resource owner.
-            $email = $provider->getResourceOwner($accessToken)->toArray()['email'];
-        } catch (GitHubIdentityProviderException $e) {
+            $email = $client->getResourceOwner($accessToken)->toArray()['email'];
+        } catch (GithubIdentityProviderException $e) {
             $message->addError($this->translator->trans('GITHUB_LOGIN_ERR.identityProviderException', [$e->getMessage()], 'contao_default'));
 
             if ($this->scopeMatcher->isBackendRequest($request)) {
@@ -141,7 +155,6 @@ class GitHubAuthenticator extends AbstractAuthenticator
             $userAdapter = $this->framework->getAdapter(MemberModel::class);
         }
 
-
         $t = $userAdapter->getTable();
         $where = ["$t.email = '$email'"];
 
@@ -159,15 +172,7 @@ class GitHubAuthenticator extends AbstractAuthenticator
             }
         }
 
-        return new SelfValidatingPassport(new UserBadge($contaoUser->username, null, ['scope' => $request->attributes->get('_scope')]));
-    }
-
-    public function createToken(Passport $passport, string $firewallName): TokenInterface
-    {
-        // Do nothing special here. Method override is redundant.
-        // This method can also be omitted and the inherited method 'parent::createToken()' can be used.
-        // @Todo Remove this method, because it is redundant.
-        return parent::createToken($passport, $firewallName);
+        return new SelfValidatingPassport(new UserBadge($contaoUser->username));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $firewallName): Response|null
@@ -201,11 +206,7 @@ class GitHubAuthenticator extends AbstractAuthenticator
 
     private function getSessionBag(Request $request): SessionBagInterface
     {
-        if ($this->scopeMatcher->isBackendRequest($request)) {
-            return $request->getSession()->getBag('contao_github_login_attr_backend');
-        }
-
-        return $request->getSession()->getBag('contao_github_login_attr_frontend');
+        return $request->getSession()->getBag('contao_github_login_attr');
     }
 
     private function throwAuthenticationException(int $code): void

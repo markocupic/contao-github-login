@@ -15,10 +15,8 @@ services:
     Markocupic\ContaoGitHubLogin\:
         resource: ../src/
         exclude:
-            - ../src/{DependencyInjection,Model,Session}
+            - ../src/{DependencyInjection,Model,Session,Event}
             - ../src/**/*Exception.php
-            - ../src/OAuth2\Client\Provider\GitHub.php
-            - ../src/OAuth2\Client\Provider\GitHubResourceOwner.php
 
     markocupic.contao_github_login.oauth2.client.client_registry:
         class: Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry
@@ -31,19 +29,11 @@ services:
         decorates: session.factory
         arguments:
             - '@markocupic.contao_github_login.session.factory.inner'
-            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag_backend'
-            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag_frontend'
+            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag'
 
-    markocupic.contao_github_login.session.attribute.array_attribute_bag_backend:
+    markocupic.contao_github_login.session.attribute.array_attribute_bag:
         class: Markocupic\ContaoGitHubLogin\Session\Attribute\ArrayAttributeBag
         arguments:
-            - '_contao_github_login_attr_backend'
+            - '_contao_github_login_attr'
         calls:
-            - [ 'setName', [ 'contao_github_login_attr_backend' ] ]
-
-    markocupic.contao_github_login.session.attribute.array_attribute_bag_frontend:
-        class: Markocupic\ContaoGitHubLogin\Session\Attribute\ArrayAttributeBag
-        arguments:
-            - '_contao_github_login_attr_frontend'
-        calls:
-            - [ 'setName', [ 'contao_github_login_attr_frontend' ] ]
+            - [ 'setName', [ 'contao_github_login_attr' ] ]
