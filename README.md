@@ -39,11 +39,11 @@ CONTAO_GITHUB_LOGIN_CLIENT_SECRET=738gdsksd893723723932023023932
 
 ## Register GitHub App
 1. Log in to your GitHub Account and go to [GitHub Developer Settings](https://github.com/settings/apps) to enter the **callback URLS** and get your GitHub **client_id** and **client_secret**.
-2. Register a new GitHub App. <span style="background-color:yellow">A new GitHub App must be set up for each login (frontend & backend).</span>
-3. Add a name for your GitHub app.
-4. Add the homepage URL: `https://your-contao-site.com`
-5. Add the first **callback URL**: `https://your-contao-page.com/_oauth2_login/github/backend` for the Backend Login.
-6. Add the second **callback URL**: `https://your-contao-page.com/_oauth2_login/github/frontend` for the Frontend Login.
+2. Register a new GitHub App.
+3. Add a name for your **GitHub app**.
+4. Add the **homepage URL**: `https://my-page.ch`
+5. Add the first **callback URL**: `https://my-page.ch/_oauth2_login/github/backend` for the Backend Login.
+6. Add the second **callback URL**: `https://my-page.ch/_oauth2_login/github/frontend` for the Frontend Login.
 7. Save your settings.
 8. Generate the **client secret**
 9. In a next step write the **client_id** and the **client_secret** to your .env file.
