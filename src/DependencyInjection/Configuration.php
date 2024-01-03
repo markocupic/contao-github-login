@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao GitHub Authenticator.
+ * This file is part of Contao GitHub Login.
  *
  * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin\DependencyInjection;
 
+use Markocupic\ContaoOAuth2Client\Controller\OAuth2RedirectController;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -27,24 +28,18 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->arrayNode('clients')
+                ->arrayNode('contao_oauth2_clients')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->arrayNode('backend')
+                        ->arrayNode('github_backend')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->booleanNode('disable_contao_login')
-                                    ->defaultValue(false)
-                                ->end()
-                                ->booleanNode('enable_github_login')
-                                    ->defaultValue(true)
-                                ->end()
-                                ->booleanNode('enable_csrf_token_check')
+                                ->booleanNode('enable_login')
                                     ->defaultValue(true)
                                 ->end()
                                 ->scalarNode('redirect_route')
                                     ->cannotBeEmpty()
-                                    ->defaultValue('_oauth2_login/github/backend')
+                                    ->defaultValue(OAuth2RedirectController::LOGIN_ROUTE_BACKEND)
                                 ->end()
                                 ->scalarNode('client_id')
                                     ->cannotBeEmpty()
@@ -54,18 +49,15 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
-                        ->arrayNode('frontend')
+                        ->arrayNode('github_frontend')
                             ->addDefaultsIfNotSet()
                             ->children()
-                                ->booleanNode('enable_github_login')
-                                    ->defaultValue(true)
-                                ->end()
-                                ->booleanNode('enable_csrf_token_check')
+                                ->booleanNode('enable_login')
                                     ->defaultValue(true)
                                 ->end()
                                 ->scalarNode('redirect_route')
                                     ->cannotBeEmpty()
-                                    ->defaultValue('_oauth2_login/github/frontend')
+                                    ->defaultValue(OAuth2RedirectController::LOGIN_ROUTE_FRONTEND)
                                 ->end()
                                 ->scalarNode('client_id')
                                     ->cannotBeEmpty()

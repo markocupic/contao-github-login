@@ -1,4 +1,0 @@
-# config/routes.yaml
-markocupic_contao_github_login.controller:
-    resource: ../src/Controller
-    type: annotation

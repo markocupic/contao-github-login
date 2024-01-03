@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao GitHub Authenticator.
+ * This file is part of Contao GitHub Login.
  *
  * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin;
 
-use Markocupic\ContaoGitHubLogin\DependencyInjection\Compiler\AddAvailableClientsPass;
 use Markocupic\ContaoGitHubLogin\DependencyInjection\MarkocupicContaoGitHubLoginExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -37,7 +36,5 @@ class MarkocupicContaoGitHubLogin extends Bundle
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-
-        $container->addCompilerPass(new AddAvailableClientsPass());
     }
 }

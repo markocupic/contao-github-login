@@ -1,7 +1,8 @@
-{% use "@MarkocupicContaoGitHubLogin/components/_github_login_button.html.twig" %}
+{% use "@MarkocupicContaoGitHubLogin/components/_login_button.html.twig" %}
 
-{% do addJavascriptResource('bundles/markocupiccontaogithublogin/js/github_login_button_animation.js|static') %}
-{% do addCssResource('bundles/markocupiccontaogithublogin/css/github_login_button.css|static') %}
+{% do addJavascriptResource('bundles/markocupiccontaooauth2client/js/github_login_button_animation.js|static') %}
+{% do addCssResource('bundles/markocupiccontaooauth2client/css/login_button.css|static') %}
+{% do addCssResource('bundles/markocupiccontaogithublogin/css/login_button.css|static') %}
 
 <!-- indexer::stop -->
 <div class="{{ class }} {{ logout|default ? 'logout' : 'login' }} block" {{ cssID }}>
@@ -12,7 +13,7 @@
 {% block github_login_backend %}
     <div class="github-login-frontend">
         <h1>{{ 'MSC.loginBT'|trans({}, 'contao_default') }}</h1>
-        <form action="{{ logout|default ? action : '{{github_login_url::frontend}}' }}" id="githubLoginFormBackend" class="github-login-form-frontend" method="post">
+        <form action="{{ logout|default ? action : '{{oauth_login_url::github_frontend}}' }}" id="githubLoginFormBackend" class="github-login-form-frontend" method="post">
             <div class="formbody">
                 {% if message|default %}
                     <p class="error">{{ message }}</p>
@@ -20,7 +21,7 @@
                 <input type="hidden" name="FORM_SUBMIT" value="{{ logout|default ? formId : 'github-login-frontend' }}">
                 <input type="hidden" name="REQUEST_TOKEN" value="{{ Template.requestToken|default('') }}">
                 <input type="hidden" name="_target_path" value="{{ targetPath|default('') }}">
-                <input type="hidden" name="_failure_path" value="{{ '{{github_login_failure_path}}' }}">
+                <input type="hidden" name="_failure_path" value="{{ '{{oauth_login_failure_path}}' }}">
                 <input type="hidden" name="_always_use_target_path" value="{{ forceTargetPath|default('') }}">
                 {% if logout|default %}
                     <p class="login_info">{{ loggedInAs }}<br>{{ lastLogin }}</p>
@@ -30,7 +31,8 @@
                 {% elseif twoFactorEnabled|default %}
                     <p class="error">Two-factor authentication not supported.</p>
                 {% else %}
-                    {% block github_login_button %}
+                    {% block login_button %}
+                        {% set client_name = 'github_frontenddd' %}
                         {{ parent() }}
                     {% endblock %}
                 {% endif %}

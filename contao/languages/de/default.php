@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao GitHub Authenticator.
+ * This file is part of Contao GitHub Login.
  *
  * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -16,10 +16,3 @@ declare(strict_types=1);
  * Miscellaneous
  */
 $GLOBALS['TL_LANG']['GITHUB_LOGIN_MSC']['logInWithGitHub'] = 'Login mit GitHub';
-$GLOBALS['TL_LANG']['GITHUB_LOGIN_MSC']['or'] = 'oder';
-
-/*
- * Errors
- */
-$GLOBALS['TL_LANG']['GITHUB_LOGIN_ERR']['userWithEmailAddressNotFound'] = 'Es wurde kein Benutzer mit der Email-Adresse "%s" in der Datenbank gefunden.';
-$GLOBALS['TL_LANG']['GITHUB_LOGIN_ERR']['identityProviderException'] = 'Zugriff auf GitHub Benutzer aufgrund eines Konfigurationsfehlers nicht möglich. Bitte überprüfen Sie die GitHub App Einstellungen.';

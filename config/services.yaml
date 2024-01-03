@@ -3,37 +3,19 @@ services:
         autowire: true
         autoconfigure: true
         public: false
-        bind:
-            $authenticationSuccessHandler: '@contao.security.authentication_success_handler'
-            $clientRegistry: '@markocupic.contao_github_login.oauth2.client.client_registry'
-
-    _instanceof:
-        Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
-            calls:
-                - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
 
     Markocupic\ContaoGitHubLogin\:
         resource: ../src/
         exclude:
-            - ../src/{DependencyInjection,Model,Session,Event}
+            - ../src/{DependencyInjection}
             - ../src/**/*Exception.php
 
-    markocupic.contao_github_login.oauth2.client.client_registry:
-        class: Markocupic\ContaoGitHubLogin\OAuth2\Client\ClientRegistry
+    Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory:
         arguments:
-            - ~ # Add clients dynamically with a compiler pass
+            - '@router'
+            - '%markocupic_contao_github_login.contao_oauth2_clients.github_backend%'
 
-    # Register session bags
-    markocupic.contao_github_login.session.factory:
-        class: Markocupic\ContaoGitHubLogin\Session\SessionFactory
-        decorates: session.factory
+    Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory:
         arguments:
-            - '@markocupic.contao_github_login.session.factory.inner'
-            - '@markocupic.contao_github_login.session.attribute.array_attribute_bag'
-
-    markocupic.contao_github_login.session.attribute.array_attribute_bag:
-        class: Markocupic\ContaoGitHubLogin\Session\Attribute\ArrayAttributeBag
-        arguments:
-            - '_contao_github_login_attr'
-        calls:
-            - [ 'setName', [ 'contao_github_login_attr' ] ]
+            - '@router'
+            - '%markocupic_contao_github_login.contao_oauth2_clients.github_frontend%'

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao GitHub Authenticator.
+ * This file is part of Contao GitHub Login.
  *
  * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -46,18 +46,19 @@ class MarkocupicContaoGitHubLoginExtension extends Extension
         $loader->load('services.yaml');
 
         $rootKey = $this->getAlias();
+
         // Backend client
-        $container->setParameter($rootKey.'.clients.backend.disable_contao_login', $config['clients']['backend']['disable_contao_login']);
-        $container->setParameter($rootKey.'.clients.backend.enable_github_login', $config['clients']['backend']['enable_github_login']);
-        $container->setParameter($rootKey.'.clients.backend.enable_csrf_token_check', $config['clients']['backend']['enable_csrf_token_check']);
-        $container->setParameter($rootKey.'.clients.backend.redirect_route', $config['clients']['backend']['redirect_route']);
-        $container->setParameter($rootKey.'.clients.backend.client_id', $config['clients']['backend']['client_id']);
-        $container->setParameter($rootKey.'.clients.backend.client_secret', $config['clients']['backend']['client_secret']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend', $config['contao_oauth2_clients']['github_backend']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.enable_login', $config['contao_oauth2_clients']['github_backend']['enable_login']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.redirect_route', $config['contao_oauth2_clients']['github_backend']['redirect_route']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.client_id', $config['contao_oauth2_clients']['github_backend']['client_id']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.client_secret', $config['contao_oauth2_clients']['github_backend']['client_secret']);
+
         // Frontend client
-        $container->setParameter($rootKey.'.clients.frontend.enable_github_login', $config['clients']['frontend']['enable_github_login']);
-        $container->setParameter($rootKey.'.clients.frontend.enable_csrf_token_check', $config['clients']['frontend']['enable_csrf_token_check']);
-        $container->setParameter($rootKey.'.clients.frontend.redirect_route', $config['clients']['frontend']['redirect_route']);
-        $container->setParameter($rootKey.'.clients.frontend.client_id', $config['clients']['frontend']['client_id']);
-        $container->setParameter($rootKey.'.clients.frontend.client_secret', $config['clients']['frontend']['client_secret']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend', $config['contao_oauth2_clients']['github_frontend']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.enable_login', $config['contao_oauth2_clients']['github_frontend']['enable_login']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.redirect_route', $config['contao_oauth2_clients']['github_frontend']['redirect_route']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.client_id', $config['contao_oauth2_clients']['github_frontend']['client_id']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.client_secret', $config['contao_oauth2_clients']['github_frontend']['client_secret']);
     }
 }

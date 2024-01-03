@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Contao GitHub Authenticator.
+ * This file is part of Contao GitHub Login.
  *
  * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
@@ -38,8 +38,6 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
         if ($this->scopeMatcher->isBackendRequest($request)) {
             if ('contao_backend_login' === $request->attributes->get('_route')) {
                 $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/github_login_button.css|static';
-                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/backend.css|static';
-                $GLOBALS['TL_JAVASCRIPT'][] = 'bundles/markocupiccontaogithublogin/js/github_login_button_animation.js|static';
             }
         }
     }
