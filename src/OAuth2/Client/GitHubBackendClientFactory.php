@@ -14,51 +14,25 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin\OAuth2\Client;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
-use Markocupic\ContaoOAuth2Client\OAuth2\Client\ClientFactoryInterface;
+use Markocupic\ContaoOAuth2Client\OAuth2\Client\AbstractClientFactory;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class GitHubBackendClientFactory implements ClientFactoryInterface
+class GitHubBackendClientFactory extends AbstractClientFactory
 {
     public const NAME = 'github_backend';
-    private const PROVIDER = 'github';
-    private const FIREWALL = 'contao_backend';
+    public const PROVIDER = 'github';
+    public const CONTAO_FIREWALL = 'contao_backend';
 
     public function __construct(
-        private readonly RouterInterface $router,
-        private readonly array $config,
+        ContaoFramework $framework,
+        protected readonly RouterInterface $router,
+        protected array $config,
     ) {
-    }
-
-    public function getName(): string
-    {
-        return self::NAME;
-    }
-
-    public function getProvider(): string
-    {
-        return self::PROVIDER;
-    }
-
-    public function getContaoFirewall(): string
-    {
-        return self::FIREWALL;
-    }
-
-    public function getConfig(): array
-    {
-        return $this->config;
-    }
-
-    public function getConfigByKey(string $key): mixed
-    {
-        if (!isset($this->config[$key])) {
-            throw new \Exception(sprintf('Invalid key "%s" selected. Did you mean one of these: "%s"?', $key, implode('", "', array_keys($this->config))));
-        }
-
-        return $this->config[$key];
+        parent::__construct($framework);
     }
 
     public function createClient(array $options = []): AbstractProvider
@@ -69,7 +43,7 @@ class GitHubBackendClientFactory implements ClientFactoryInterface
         $opt = [];
         $opt['clientSecret'] = $options['client_secret'];
         $opt['clientId'] = $options['client_id'];
-        $opt['redirectUri'] = $this->router->generate($options['redirect_route'], ['_oauth2_client' => $this->getName()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $opt['redirectUri'] = $this->router->generate($this->getRedirectRoute(), ['_oauth2_client' => $this->getName()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return new Github($opt, []);
     }

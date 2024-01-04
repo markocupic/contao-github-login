@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin\DependencyInjection;
 
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -48,17 +50,15 @@ class MarkocupicContaoGitHubLoginExtension extends Extension
         $rootKey = $this->getAlias();
 
         // Backend client
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend', $config['contao_oauth2_clients']['github_backend']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.enable_login', $config['contao_oauth2_clients']['github_backend']['enable_login']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.redirect_route', $config['contao_oauth2_clients']['github_backend']['redirect_route']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.client_id', $config['contao_oauth2_clients']['github_backend']['client_id']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_backend.client_secret', $config['contao_oauth2_clients']['github_backend']['client_secret']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubBackendClientFactory::NAME, $config['contao_oauth2_clients'][GitHubBackendClientFactory::NAME]);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubBackendClientFactory::NAME.'.enable_login', $config['contao_oauth2_clients'][GitHubBackendClientFactory::NAME]['enable_login']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubBackendClientFactory::NAME.'.client_id', $config['contao_oauth2_clients'][GitHubBackendClientFactory::NAME]['client_id']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubBackendClientFactory::NAME.'.client_secret', $config['contao_oauth2_clients'][GitHubBackendClientFactory::NAME]['client_secret']);
 
         // Frontend client
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend', $config['contao_oauth2_clients']['github_frontend']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.enable_login', $config['contao_oauth2_clients']['github_frontend']['enable_login']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.redirect_route', $config['contao_oauth2_clients']['github_frontend']['redirect_route']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.client_id', $config['contao_oauth2_clients']['github_frontend']['client_id']);
-        $container->setParameter($rootKey.'.contao_oauth2_clients.github_frontend.client_secret', $config['contao_oauth2_clients']['github_frontend']['client_secret']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubFrontendClientFactory::NAME, $config['contao_oauth2_clients'][GitHubFrontendClientFactory::NAME]);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubFrontendClientFactory::NAME.'.enable_login', $config['contao_oauth2_clients'][GitHubFrontendClientFactory::NAME]['enable_login']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubFrontendClientFactory::NAME.'.client_id', $config['contao_oauth2_clients'][GitHubFrontendClientFactory::NAME]['client_id']);
+        $container->setParameter($rootKey.'.contao_oauth2_clients.'.GitHubFrontendClientFactory::NAME.'.client_secret', $config['contao_oauth2_clients'][GitHubFrontendClientFactory::NAME]['client_secret']);
     }
 }

@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\ContaoGitHubLogin\DependencyInjection;
 
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory;
+use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory;
 use Markocupic\ContaoOAuth2Client\Controller\OAuth2RedirectController;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -31,15 +33,11 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('contao_oauth2_clients')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->arrayNode('github_backend')
+                        ->arrayNode(GitHubBackendClientFactory::NAME)
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->booleanNode('enable_login')
                                     ->defaultValue(true)
-                                ->end()
-                                ->scalarNode('redirect_route')
-                                    ->cannotBeEmpty()
-                                    ->defaultValue(OAuth2RedirectController::LOGIN_ROUTE_BACKEND)
                                 ->end()
                                 ->scalarNode('client_id')
                                     ->cannotBeEmpty()
@@ -49,15 +47,11 @@ class Configuration implements ConfigurationInterface
                                 ->end()
                             ->end()
                         ->end()
-                        ->arrayNode('github_frontend')
+                        ->arrayNode(GitHubFrontendClientFactory::NAME)
                             ->addDefaultsIfNotSet()
                             ->children()
                                 ->booleanNode('enable_login')
                                     ->defaultValue(true)
-                                ->end()
-                                ->scalarNode('redirect_route')
-                                    ->cannotBeEmpty()
-                                    ->defaultValue(OAuth2RedirectController::LOGIN_ROUTE_FRONTEND)
                                 ->end()
                                 ->scalarNode('client_id')
                                     ->cannotBeEmpty()
