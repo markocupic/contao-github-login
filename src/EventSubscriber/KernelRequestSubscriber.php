@@ -37,7 +37,7 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
 
         if ($this->scopeMatcher->isBackendRequest($request)) {
             if ('contao_backend_login' === $request->attributes->get('_route')) {
-                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/github_login_button.css|static';
+                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/login_button.css|static';
             }
         }
     }
