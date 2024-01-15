@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\ContaoGitHubLogin\ButtonGenerator;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Markocupic\ContaoGitHubLogin\OAuth2\Client\Client;
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory;
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory;
 use Markocupic\ContaoOAuth2Client\ButtonGenerator\ButtonGeneratorInterface;

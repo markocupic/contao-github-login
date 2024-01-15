@@ -16,7 +16,6 @@ namespace Markocupic\ContaoGitHubLogin\DependencyInjection;
 
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory;
 use Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory;
-use Markocupic\ContaoOAuth2Client\Controller\OAuth2RedirectController;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
