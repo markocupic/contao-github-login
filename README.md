@@ -44,8 +44,8 @@ CONTAO_GITHUB_LOGIN_CLIENT_SECRET=738gdsksd893723723932023023932
 2. Register a new GitHub App.
 3. Add a name for your **GitHub app**.
 4. Add the **homepage URL**: `https://my-page.ch`
-5. Add the first **callback URL**: `https://my-page.ch/_oauth2_login/github/backend` for the Backend Login.
-6. Add the second **callback URL**: `https://my-page.ch/_oauth2_login/github/frontend` for the Frontend Login.
+5. Add the first **callback URL**: `https://my-page.ch/_oauth2_login/github_backend/backend` for the Backend Login.
+6. Add the second **callback URL**: `https://my-page.ch/_oauth2_login/github_frontend/frontend` for the Frontend Login.
 7. Save your settings.
 8. Generate the **client secret**
 9. In a next step write the **client_id** and the **client_secret** to your .env file.
