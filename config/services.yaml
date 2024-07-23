@@ -13,11 +13,15 @@ services:
     Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubBackendClientFactory:
         arguments:
             - '@contao.framework'
+            - '@database_connection'
+            - '@event_dispatcher'
             - '@router'
             - '%markocupic_contao_github_login.contao_oauth2_clients.github_backend%'
 
     Markocupic\ContaoGitHubLogin\OAuth2\Client\GitHubFrontendClientFactory:
         arguments:
             - '@contao.framework'
+            - '@database_connection'
+            - '@event_dispatcher'
             - '@router'
             - '%markocupic_contao_github_login.contao_oauth2_clients.github_frontend%'
