@@ -18,7 +18,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Github;
-use Markocupic\ContaoOAuth2Client\Event\CreateOAauth2ProviderEvent;
+use Markocupic\ContaoOAuth2Client\Event\CreateOAuth2ProviderEvent;
 use Markocupic\ContaoOAuth2Client\OAuth2\Client\AbstractClientFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +54,7 @@ class GitHubBackendClientFactory extends AbstractClientFactory
         $client = new Github($opt, []);
 
         // Allow modifications on the OAuth2 client using event listeners or event subscribers
-        $event = new CreateOAauth2ProviderEvent($request, $client, $opt);
+        $event = new CreateOAuth2ProviderEvent($request, $client, $opt);
         $this->eventDispatcher->dispatch($event);
 
         return $event->getClient();
