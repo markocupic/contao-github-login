@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\ContaoGitHubLogin\EventSubscriber;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 readonly class KernelRequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
+        private readonly Packages $packages,
         private ScopeMatcher $scopeMatcher,
     ) {
     }
@@ -37,7 +39,7 @@ readonly class KernelRequestSubscriber implements EventSubscriberInterface
 
         if ($this->scopeMatcher->isBackendRequest($request)) {
             if ('contao_backend_login' === $request->attributes->get('_route')) {
-                $GLOBALS['TL_CSS'][] = 'bundles/markocupiccontaogithublogin/css/login_button.css|static';
+                $GLOBALS['TL_CSS'][] = $this->packages->getUrl('css/login_button.css', 'markocupic_contao_git_hub_login');
             }
         }
     }

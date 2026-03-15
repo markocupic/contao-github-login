@@ -1,0 +1,17 @@
+.login-btn-container {
+  button[data-client="github_backend"], button[data-client="github_frontend"] {
+    background-color: #000000;
+    color: #ffffff;
+  }
+}
+
+html[data-color-scheme=dark] {
+  .login-btn-container {
+    button[data-client="github_backend"] {
+      background: var(--form-button) !important;
+      border: 1px solid var(--form-border) !important;
+      border-radius: var(--border-radius) !important;
+      color: var(--text) !important;
+    }
+  }
+}
