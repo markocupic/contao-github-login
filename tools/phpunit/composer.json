@@ -1,6 +1,14 @@
 {
     "require": {
+        "markocupic/contao-github-login": " ^1.0",
+        "contao/core-bundle": " ^5.2",
         "phpunit/phpunit": "^9.5",
-        "contao/test-case": "^5.0"
+        "contao/test-case": "^5.3"
+    },
+    "config": {
+        "allow-plugins": {
+            "contao-components/installer": true,
+            "php-http/discovery": true
+        }
     }
 }
