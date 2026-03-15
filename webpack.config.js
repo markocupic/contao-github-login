@@ -5,18 +5,6 @@ Encore
     .setPublicPath('/bundles/markocupiccontaogithublogin')
     .setManifestKeyPrefix('')
 
-    .copyFiles({
-        from: './assets/styles',
-        to: 'css/[path][name].[hash:8].[ext]',
-        pattern: /(\.css)$/,
-
-    })
-    .copyFiles({
-        from: './assets/js',
-        to: 'js/[path][name].[hash:8].[ext]',
-
-    })
-
     .disableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
     .enableSourceMaps()

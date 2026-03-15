@@ -1,0 +1,2 @@
+.login-btn-container button[data-client=github_backend],.login-btn-container button[data-client=github_frontend]{background-color:#000;color:#fff}html[data-color-scheme=dark] .login-btn-container button[data-client=github_backend]{background-color:var(--form-button);border:1px solid var(--form-border);border-radius:var(--border-radius);color:var(--text)}html[data-color-scheme=dark] .login-btn-container button[data-client=github_backend]:hover{background-color:var(--form-button-hover)!important}
+/*# sourceMappingURL=login_button.b1d26283.css.map*/

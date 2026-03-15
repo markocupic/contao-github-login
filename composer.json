@@ -24,15 +24,18 @@
     "require": {
         "php": "^8.2",
         "contao/core-bundle": "^5.2",
+        "doctrine/dbal": "^3.0 || ^4.0",
         "league/oauth2-client": "^2.7",
         "league/oauth2-github": "^3.0",
         "markocupic/contao-twig-assets": "^1.1",
-        "markocupic/contao-oauth2-client": "^1.1"
+        "markocupic/contao-oauth2-client": "^1.1",
+        "symfony/asset": "^6.0 || ^7.0",
+        "twig/twig": "^3.0"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.12",
         "symfony/webpack-encore-bundle": "2.4",
-        "symfony/asset": "^6.0 || ^7.0"
+        "markocupic/easy-coding-standard": "^13.0"
     },
     "autoload": {
         "psr-4": {
@@ -50,7 +53,8 @@
         "contao-manager-plugin": "Markocupic\\ContaoGitHubLogin\\ContaoManager\\Plugin"
     },
     "scripts": {
-        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ tests/ --config tools/ecs/config.php --fix --ansi",
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check config/ contao/ src/ templates/ --config tools/ecs/config/default.php --fix --ansi",
+        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyse src tests",
         "unit-tests": "@php tools/phpunit/vendor/bin/phpunit -c tools/phpunit/phpunit.xml.dist"
     }
 }

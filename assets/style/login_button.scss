@@ -8,10 +8,14 @@
 html[data-color-scheme=dark] {
   .login-btn-container {
     button[data-client="github_backend"] {
-      background: var(--form-button) !important;
-      border: 1px solid var(--form-border) !important;
-      border-radius: var(--border-radius) !important;
-      color: var(--text) !important;
+      background-color: var(--form-button);
+      border: 1px solid var(--form-border);
+      border-radius: var(--border-radius);
+      color: var(--text);
+
+      &:hover {
+        background-color: var(--form-button-hover) !important;
+      }
     }
   }
 }
