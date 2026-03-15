@@ -20,6 +20,7 @@ use Contao\ManagerPlugin\Bundle\Parser\DelegatingParser;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\ContaoGitHubLogin\ContaoManager\Plugin;
 use Markocupic\ContaoGitHubLogin\MarkocupicContaoGitHubLogin;
+use Markocupic\ContaoOAuth2Client\MarkocupicContaoOAuth2Client;
 
 /**
  * @package Markocupic\ContaoGitHubLogin\Tests\ContaoManager
@@ -47,7 +48,7 @@ class PluginTest extends ContaoTestCase
         $this->assertCount(1, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
         $this->assertSame(MarkocupicContaoGitHubLogin::class, $bundles[0]->getName());
-        $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
+        $this->assertSame([ContaoCoreBundle::class, MarkocupicContaoOAuth2Client::class], $bundles[0]->getLoadAfter());
     }
 
 }
