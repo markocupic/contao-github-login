@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao GitHub Login.
  *
- * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
+ * (c) Marko Cupic <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -23,9 +23,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class MarkocupicContaoGitHubLoginExtension extends Extension
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getAlias(): string
     {
         return Configuration::ROOT_KEY;
@@ -42,7 +39,7 @@ class MarkocupicContaoGitHubLoginExtension extends Extension
 
         $loader = new YamlFileLoader(
             $container,
-            new FileLocator(__DIR__.'/../../config')
+            new FileLocator(__DIR__.'/../../config'),
         );
 
         $loader->load('services.yaml');
